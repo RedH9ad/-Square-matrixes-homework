@@ -1,8 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <iostream>
-// Концептуально в каждом из классов функцию свапа двух строк оставлям а
-// остальную логику детерминантов сюда
+
 namespace QuadraticMatrix {
 template <class BaseMatrix, class ValType> class DeterminantMixin {
   BaseMatrix *matrix() { return static_cast<BaseMatrix *>(this); }
@@ -11,8 +10,13 @@ template <class BaseMatrix, class ValType> class DeterminantMixin {
   }
   void AddMultipliedRows(size_t id_from, size_t id_to,
                          ValType multiplier = static_cast<ValType>(1));
-  void ToTriangular(bool &string_change, bool &zero_column, ValType eps);
+
+  void ToTriangular(bool &row_change, bool &zero_column, ValType eps);
+
+  // Меняет текущую строку на строку с максимальным по модулю элементом для
+  // повышения численной устойчивости
   size_t FindMaxPivot(bool &zero_column, size_t iteration, ValType eps);
+
   void ProcessConsistenIterationGauss(size_t iteration);
 
   void ProcessZeroMinor(size_t iteration, bool &row_change, bool &zero_column);
@@ -28,7 +32,9 @@ public:
   ValType CountDeterminantBareiss() const
     requires std::signed_integral<ValType>;
 
-  BaseMatrix Invert(ValType eps = static_cast<ValType>(1e-10)) const;
+  BaseMatrix Invert(ValType eps = static_cast<ValType>(1e-10)) const
+    requires std::floating_point<ValType>;
+  ;
 };
 } // namespace QuadraticMatrix
 

@@ -111,7 +111,7 @@ void WriteToCSV(const std::string &filename,
 int main() {
   size_t size_lb = 2;
   size_t size_ub = 1000;
-  size_t iterations = 1;
+  size_t iterations = 67;
   int vlb = -100;
   int vub = 100;
   std::mutex mutex;

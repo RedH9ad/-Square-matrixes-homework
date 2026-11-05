@@ -42,17 +42,20 @@ void DeterminantMixin<BaseMatrix, ValType>::ProcessConsistenIterationGauss(
 }
 
 template <class BaseMatrix, class ValType>
-void DeterminantMixin<BaseMatrix, ValType>::ToTriangular(bool &string_change,
+void DeterminantMixin<BaseMatrix, ValType>::ToTriangular(bool &row_change,
                                                          bool &zero_column,
                                                          ValType eps) {
-  string_change = false;
+  row_change = false;
   zero_column = false;
+
   for (size_t iteration = 0; iteration < matrix()->GetSize(); iteration++) {
     size_t max_pivot = FindMaxPivot(zero_column, iteration, eps);
+
     if (max_pivot != iteration) {
       matrix()->SwapTwoRows(iteration, max_pivot);
-      string_change = !string_change;
+      row_change = !row_change;
     }
+
     if (zero_column) {
       return;
     }
@@ -68,19 +71,21 @@ DeterminantMixin<BaseMatrix, ValType>::CountDeterminantGauss(ValType eps) const
   if (matrix()->GetSize() == 0) {
     return static_cast<ValType>(0);
   }
+
   BaseMatrix temp = *matrix();
-  bool string_change = false;
+  bool row_change = false;
   bool zero_column = false;
-  temp.ToTriangular(string_change, zero_column, eps);
+  temp.ToTriangular(row_change, zero_column, eps);
   if (zero_column) {
     return static_cast<ValType>(0);
   }
+
   ValType det = static_cast<ValType>(1);
   for (size_t row = 0; row < matrix()->GetSize(); row++) {
     det *= temp[row][row];
   }
 
-  if (string_change) {
+  if (row_change) {
     det *= static_cast<ValType>(-1);
   }
   return det;
@@ -103,6 +108,7 @@ void DeterminantMixin<BaseMatrix, ValType>::ProcessZeroMinor(
 template <class BaseMatrix, class ValType>
 void DeterminantMixin<BaseMatrix, ValType>::ProcessConsistenIterationBareiss(
     size_t iteration, ValType previous_minor) {
+
   for (size_t row = iteration + 1; row < matrix()->GetSize(); row++) {
     for (size_t col = iteration + 1; col < matrix()->GetSize(); col++) {
       (*matrix())[row][col] =
@@ -154,14 +160,17 @@ void DeterminantMixin<BaseMatrix, ValType>::OneInvertionIteration(
   if (zero_column) {
     throw std::runtime_error("Попытка обратить вырожденную матрицу");
   }
+
   if (max_pivot != iteration) {
     matrix()->SwapTwoRows(iteration, max_pivot);
     res.SwapTwoRows(iteration, max_pivot);
   }
+
   for (size_t row = 0; row < matrix()->GetSize(); row++) {
     if (row == iteration) {
       continue;
     }
+
     ValType multiplier =
         (*matrix())[row][iteration] / (*matrix())[iteration][iteration];
     AddMultipliedRows(iteration, row, -multiplier);
@@ -176,7 +185,9 @@ void DeterminantMixin<BaseMatrix, ValType>::OneInvertionIteration(
 }
 
 template <class BaseMatrix, class ValType>
-BaseMatrix DeterminantMixin<BaseMatrix, ValType>::Invert(ValType eps) const {
+BaseMatrix DeterminantMixin<BaseMatrix, ValType>::Invert(ValType eps) const
+  requires std::floating_point<ValType>
+{
   BaseMatrix res = matrix()->Eye(matrix()->GetSize());
   BaseMatrix temp(*matrix());
   for (size_t iteration = 0; iteration < matrix()->GetSize(); iteration++) {

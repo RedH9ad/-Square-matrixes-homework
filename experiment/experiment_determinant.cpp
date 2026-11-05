@@ -104,7 +104,7 @@ void WriteToCSV(const std::string &filename,
 
 int main() {
   size_t size_lb = 2;
-  size_t size_ub = 000;
+  size_t size_ub = 1500;
   size_t iterations = 67;
   int vlb = -100;
   int vub = 100;

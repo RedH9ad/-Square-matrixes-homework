@@ -36,6 +36,7 @@ ContinuousMatrix<ValType>::ContinuousMatrix(
     throw std::runtime_error("Попытка создать квадратную матрицу из двумерного "
                              "std::vector не квадратных размеров");
   }
+
   for (size_t row = 0; row < size_; row++) {
     for (size_t col = 0; col < size_; col++) {
       (*this)[row][col] = matrix[row][col];
@@ -145,10 +146,12 @@ ContinuousMatrix<ValType> ContinuousMatrix<ValType>::operator*(
   if (other.GetSize() != size_) {
     throw std::runtime_error("Попытка перемножить матрицы разного размера");
   }
+
   ContinuousMatrix temp(size_);
   for (size_t row = 0; row < size_; row++) {
     for (size_t iter = 0; iter < size_; iter++) {
       auto multiplyer = *(matrix_ + row * size_ + iter);
+
       for (size_t col = 0; col < size_; col++) {
         (*(temp.matrix_ + row * size_ + col)) +=
             multiplyer * (*(other.matrix_ + iter * size_ + col));
@@ -164,6 +167,7 @@ ContinuousMatrix<ValType> ContinuousMatrix<ValType>::operator+(
   if (other.GetSize() != size_) {
     throw std::runtime_error("Попытка сложить матрицы разного размера");
   }
+
   ContinuousMatrix<ValType> temp(*this);
   size_t arr_size = size_ * size_;
   for (size_t iter = 0; iter < arr_size; iter++) {

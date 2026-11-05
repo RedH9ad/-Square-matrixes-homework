@@ -156,10 +156,12 @@ JaggedMatrix<ValType>::operator*(const JaggedMatrix<ValType> &other) const {
   if (other.GetSize() != size_) {
     throw std::runtime_error("Попытка перемножить матрицы разного размера");
   }
+
   JaggedMatrix temp(size_);
   for (size_t row = 0; row < size_; row++) {
     for (size_t iter = 0; iter < size_; iter++) {
       auto multiplyer = (*this)[row][iter];
+
       for (size_t col = 0; col < size_; col++) {
         temp[row][col] += multiplyer * other[iter][col];
       }
@@ -174,6 +176,7 @@ JaggedMatrix<ValType>::operator+(const JaggedMatrix<ValType> &other) const {
   if (other.GetSize() != size_) {
     throw std::runtime_error("Попытка сложить матрицы разного размера");
   }
+
   JaggedMatrix<ValType> temp(*this);
   for (size_t row = 0; row < size_; row++) {
     for (size_t col = 0; col < size_; col++) {
