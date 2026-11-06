@@ -5,3 +5,6 @@ build
 .clang_format
 python_plotter.py
 .venv
+.gitignore
+README.md
+process_benchmark.py

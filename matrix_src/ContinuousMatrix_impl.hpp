@@ -130,9 +130,12 @@ ContinuousMatrix<ValType> ContinuousMatrix<ValType>::Transpose() const {
 template <class ValType>
 bool ContinuousMatrix<ValType>::Equal(const ContinuousMatrix<ValType> &other,
                                       ValType eps) const {
+  if (size_ != other.GetSize()) {
+    return false;
+  }
   for (size_t row = 0; row < size_; row++) {
     for (size_t col = 0; col < size_; col++) {
-      if (std::abs((*this)[col][row] != other[col][row]) > eps) {
+      if (std::abs((*this)[col][row] - other[col][row]) > eps) {
         return false;
       }
     }

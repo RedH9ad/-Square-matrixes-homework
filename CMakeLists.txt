@@ -14,6 +14,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+FetchContent_Declare(
+    googlebenchmark
+    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_TAG        v1.8.3
+)
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googlebenchmark)
+
 enable_testing()
 
 add_library(matrix_core INTERFACE)
@@ -26,26 +34,29 @@ add_executable(matrix_tests
     tests/TestJagged.cpp
 )
 
-add_executable(experiment_det experiment/experiment_determinant.cpp)
-add_executable(experiment_mul experiment/experiment_multiplication.cpp)
-add_executable(experiment_add experiment/experiment_addition.cpp)
+add_executable(benchmark_det benchmark/benchmark_determinant.cpp)
+add_executable(benchmark_mul benchmark/benchmark_multiplication.cpp)
+add_executable(benchmark_add benchmark/benchmark_addition.cpp)
 
-target_link_libraries(experiment_det
+target_link_libraries(benchmark_det
     PRIVATE
         matrix_core
         generator_interface
+        benchmark::benchmark_main
 )
 
-target_link_libraries(experiment_mul
+target_link_libraries(benchmark_mul
     PRIVATE
         matrix_core
         generator_interface
+        benchmark::benchmark_main
 )
 
-target_link_libraries(experiment_add
+target_link_libraries(benchmark_add
     PRIVATE
         matrix_core
         generator_interface
+        benchmark::benchmark_main
 )
 
 target_link_libraries(matrix_tests
@@ -56,3 +67,10 @@ target_link_libraries(matrix_tests
 
 include(GoogleTest)
 gtest_discover_tests(matrix_tests)
+
+option(ENABLE_SANITIZERS "Enable ASan and UBSan" OFF)
+
+if(ENABLE_SANITIZERS)
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -g)
+    add_link_options(-fsanitize=address,undefined)
+endif()

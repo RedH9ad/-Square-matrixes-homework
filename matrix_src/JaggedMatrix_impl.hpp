@@ -140,6 +140,9 @@ void JaggedMatrix<ValType>::SwapTwoRows(size_t first, size_t second) {
 template <class ValType>
 bool JaggedMatrix<ValType>::Equal(const JaggedMatrix<ValType> &other,
                                   ValType eps) const {
+  if (size_ != other.GetSize()) {
+    return false;
+  }
   for (size_t row = 0; row < size_; row++) {
     for (size_t col = 0; col < size_; col++) {
       if (std::abs((*this)[col][row] - other[col][row]) > eps) {

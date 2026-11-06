@@ -111,10 +111,13 @@ void DeterminantMixin<BaseMatrix, ValType>::ProcessConsistenIterationBareiss(
 
   for (size_t row = iteration + 1; row < matrix()->GetSize(); row++) {
     for (size_t col = iteration + 1; col < matrix()->GetSize(); col++) {
+      __int128_t minuend =
+          (*matrix())[row][col] * (*matrix())[iteration][iteration];
+      __int128_t subtrahend =
+          (*matrix())[row][iteration] * (*matrix())[iteration][col];
+
       (*matrix())[row][col] =
-          ((*matrix())[row][col] * (*matrix())[iteration][iteration] -
-           (*matrix())[row][iteration] * (*matrix())[iteration][col]) /
-          previous_minor;
+          static_cast<ValType>((minuend - subtrahend) / previous_minor);
     }
   }
 }
