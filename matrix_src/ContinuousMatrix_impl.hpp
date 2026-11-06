@@ -32,12 +32,11 @@ template <class ValType>
 ContinuousMatrix<ValType>::ContinuousMatrix(
     const std::vector<std::vector<ValType>> &matrix)
     : ContinuousMatrix(matrix.size()) {
-  if (matrix[0].size() != matrix.size()) {
-    throw std::runtime_error("Попытка создать квадратную матрицу из двумерного "
-                             "std::vector не квадратных размеров");
-  }
-
   for (size_t row = 0; row < size_; row++) {
+    if (matrix[row].size() != size_) {
+      throw std::runtime_error("Попытка создать квадратную матрицу из "
+                               "двумерного std::vector не квадратных размеров");
+    }
     for (size_t col = 0; col < size_; col++) {
       (*this)[row][col] = matrix[row][col];
     }
@@ -118,7 +117,7 @@ void ContinuousMatrix<ValType>::SwapTwoRows(size_t first, size_t second) {
 
 template <class ValType>
 ContinuousMatrix<ValType> ContinuousMatrix<ValType>::Transpose() const {
-  ContinuousMatrix temp(*this);
+  ContinuousMatrix temp(size_);
   for (size_t i = 0; i < size_; i++) {
     for (size_t j = 0; j < size_; j++) {
       temp[i][j] = (*this)[j][i];
@@ -135,7 +134,7 @@ bool ContinuousMatrix<ValType>::Equal(const ContinuousMatrix<ValType> &other,
   }
   for (size_t row = 0; row < size_; row++) {
     for (size_t col = 0; col < size_; col++) {
-      if (std::abs((*this)[col][row] - other[col][row]) > eps) {
+      if (std::abs((*this)[row][col] - other[row][col]) > eps) {
         return false;
       }
     }

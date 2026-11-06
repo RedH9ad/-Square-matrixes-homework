@@ -33,7 +33,7 @@ public:
   };
 
   ContinuousMatrix() = default;
-  ContinuousMatrix(size_t size);
+  explicit ContinuousMatrix(size_t size);
   template <class SeqIt> ContinuousMatrix(size_t size, SeqIt begin, SeqIt end);
   explicit ContinuousMatrix(const std::vector<std::vector<ValType>> &matrix);
   static ContinuousMatrix Eye(size_t size);

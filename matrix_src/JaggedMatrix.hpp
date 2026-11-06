@@ -20,7 +20,7 @@ private:
 public:
   // По дефолту инициализируется нулевой матрицей заданного размера
   JaggedMatrix() = default;
-  JaggedMatrix(size_t size);
+  explicit JaggedMatrix(size_t size);
 
   // Конструктор на случай когда хотим создать матрицу заполненную значениями
   JaggedMatrix(size_t size, ValType value);

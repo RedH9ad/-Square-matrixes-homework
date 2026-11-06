@@ -50,12 +50,14 @@ template <class ValType>
 JaggedMatrix<ValType>::JaggedMatrix(
     const std::vector<std::vector<ValType>> &matrix)
     : JaggedMatrix(matrix.size()) {
-  if (matrix[0].size() != matrix.size()) {
-    throw std::runtime_error("Попытка создать квадратную матрицу из двумерного "
-                             "std::vector не квадратных размеров");
-  }
   for (size_t row = 0; row < size_; row++) {
-    std::copy(matrix[row].begin(), matrix[row].end(), matrix_[row]);
+    if (matrix[row].size() != size_) {
+      throw std::runtime_error("Попытка создать квадратную матрицу из "
+                               "двумерного std::vector не квадратных размеров");
+    }
+    for (size_t col = 0; col < size_; col++) {
+      (*this)[row][col] = matrix[row][col];
+    }
   }
 }
 
@@ -145,7 +147,7 @@ bool JaggedMatrix<ValType>::Equal(const JaggedMatrix<ValType> &other,
   }
   for (size_t row = 0; row < size_; row++) {
     for (size_t col = 0; col < size_; col++) {
-      if (std::abs((*this)[col][row] - other[col][row]) > eps) {
+      if (std::abs((*this)[row][col] - other[row][col]) > eps) {
         return false;
       }
     }
